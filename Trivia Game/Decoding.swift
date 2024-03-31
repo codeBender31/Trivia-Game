@@ -10,15 +10,19 @@ import Foundation
 extension String {
     func decodingHTMLEntities() -> String {
         guard let data = data(using: .utf8) else {
+            print("Failed to convert string to data")
             return self
         }
         let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
             .documentType: NSAttributedString.DocumentType.html,
             .characterEncoding: String.Encoding.utf8.rawValue
         ]
-        guard let attributedString = try? NSAttributedString(data: data, options: options, documentAttributes: nil) else {
+        do {
+            let attributedString = try NSAttributedString(data: data, options: options, documentAttributes: nil)
+            return attributedString.string
+        } catch {
+            print("HTML decoding error:", error)
             return self
         }
-        return attributedString.string
     }
 }

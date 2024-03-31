@@ -48,7 +48,7 @@ struct OptionsView: View {
                 
                 Section {
                     NavigationLink(destination: ContentView()) {
-                        Text("Start Game")
+                        Text("Start Game").foregroundColor(.blue)
                     }
                 }
             }

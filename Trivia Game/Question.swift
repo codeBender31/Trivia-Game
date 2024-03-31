@@ -22,13 +22,17 @@ struct Question: Codable, Identifiable{
     let question: String
     let correctAnswer: String
     let incorrectAnswers: [String]
+    var allAnswers: [String] {
+         var answers = incorrectAnswers
+         answers.append(correctAnswer)
+         return answers // Shuffle the answers to mix the correct answer with incorrect ones
+     }
     // Existing properties...
       var userAnswer: String? = nil // Add this line
     
     enum CodingKeys: String, CodingKey {
-        case category, type, difficulty, question
-        case correctAnswer = "correct_answer", incorrectAnswers = "incorrect_answers"
-    }
+          case category, type, difficulty, question, correctAnswer = "correct_answer", incorrectAnswers = "incorrect_answers"
+      }
 }
     
 struct TriviaResponse: Codable{

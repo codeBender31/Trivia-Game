@@ -10,6 +10,10 @@ import SwiftUI
 struct ContentView: View {
     @State private var questions: [Question] = []
     @State private var jsonData: String = ""
+    @State private var timeRemaining = 30 // Example: 30 seconds for each question
+    @State private var showScoreAlert = false
+    @State private var userScore = 0
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 //    let numberOfQuestions: Int = 10
 //    let selectedCategory: Category = .general
 //    let selectedDifficulty: Difficulty = .medium
@@ -17,22 +21,33 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             VStack {
+                Text("Time Remaining: \(timeRemaining)")
+                                    .font(.headline)
+                                    .foregroundColor(timeRemaining > 10 ? .black : .red) // Turns red when low
+                                    .padding()
                 if questions.isEmpty {
                     Text("Loading...")
                         .padding()
                 } else {
                     ForEach(questions) { question in
                         VStack(alignment: .leading) {
-                            Text(" \(question.question)").font(.headline)
-                          
-                            //Correct Answer
-                            Text(" \(question.correctAnswer)").font(.headline)
-                            //Incorrect answer
-                            Text(" \(question.incorrectAnswers.joined(separator: "\n"))").font(.headline)
+                            Text(" \(question.question)").font(.system(size: 24))
+                            Spacer()
+                            // Display all answers as interactive buttons
+                            ForEach(question.allAnswers, id: \.self) { answer in AnswerButton(answer: answer) {
+                                // Action to be performed when an answer is selected
+                                print("Selected answer: \(answer)")
+                            }.padding(.bottom, 2)
+                            }
+//                            //Correct Answer
+//                            Text(" \(question.correctAnswer) ").font(.system(size: 24))
+//                            //Incorrect answer
+//                            Text(" \(question.incorrectAnswers.joined(separator: "\n"))").font(.system(size: 24))
                         }
                         .padding()
-                        .background(Color.white)
-                        .cornerRadius(8)
+                        .background(Color.blue.gradient)
+                        .foregroundColor(Color.white)
+                        .cornerRadius(10)
                         .shadow(radius: 5)
                         .padding(.horizontal)
                            .padding(.vertical, 8)
@@ -46,7 +61,26 @@ struct ContentView: View {
                 }
             })
             
+        } .onReceive(timer) { _ in
+            if timeRemaining > 0 {
+                timeRemaining -= 1
+            } else {
+                // Calculate the score or use a hardcoded value
+                userScore = 7 // Example hardcoded score, replace with actual calculation if needed
+                // Show the alert
+                showScoreAlert = true
+                // Stop the timer
+                timer.upstream.connect().cancel()
+            }
+        }.alert("Time's Up!", isPresented: $showScoreAlert) {
+            Button("OK") {
+                // Here you can add any actions to take after the user dismisses the alert
+                // For example, reset for a new game or navigate to a different view
+            }
+        } message: {
+            Text("Your score is \(userScore)/\(questions.count)")
         }
+        
     }
     
     func fetchQuestions() async{
@@ -67,25 +101,22 @@ struct ContentView: View {
         }
     }
 }
-// A view representing an answer button
 struct AnswerButton: View {
     let answer: String
-    let question: Question
+    var action: () -> Void // This closure is executed when the button is tapped.
 
     var body: some View {
-        Button(action: {
-            // Handle answer selection here...
-            print("Selected answer: \(answer)")
-        }) {
+        Button(action: action) {
             Text(answer)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.white.opacity(0.2)) // Light gray background
+                .foregroundColor(.black)
+                .cornerRadius(8)
         }
-        .foregroundColor(.black)
-        .background(Color.gray.opacity(0.2))
-        .cornerRadius(8)
     }
 }
+
 
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
