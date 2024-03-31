@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct Trivia_GameApp: App {
+//    @StateObject var viewModel = TriviaView() // Initialize your view model here
     var body: some Scene {
         WindowGroup {
-           TriviaView()
+//            OptionsView().environmentObject(viewModel) // Inject viewModel into the environment
+            ContentView()
         }
     }
 }

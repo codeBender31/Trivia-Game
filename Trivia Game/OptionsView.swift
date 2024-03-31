@@ -1,6 +1,14 @@
+//
+//  Trivia_GameApp.swift
+//  Trivia Game
+//
+//  Created by Bender on 3/26/24.
+//
+//OptioinsView
 import SwiftUI
 
 struct OptionsView: View {
+//    @EnvironmentObject var viewModel: TriviaView
     @State private var numberOfQuestions: Double = 10 // Using Double for Slider
     @State private var selectedCategory: Category = .general
     @State private var selectedDifficulty: Difficulty = .medium
@@ -13,7 +21,7 @@ struct OptionsView: View {
                     // Number of Questions Slider
                     HStack {
                         Text("Number of Questions: \(Int(numberOfQuestions))")
-                        Slider(value: $numberOfQuestions, in: 5...50, step: 1)
+                        Slider(value: $numberOfQuestions, in: 5...10, step: 1)
                     }
                     
                     // Category Picker
@@ -39,15 +47,12 @@ struct OptionsView: View {
                 }
                 
                 Section {
-                    NavigationLink(destination: GameView(
-                        // Initialize GameView with the selected options.
-                        // You'll need to modify GameView to accept and use these options.
-                    )) {
+                    NavigationLink(destination: ContentView()) {
                         Text("Start Game")
                     }
                 }
             }
-            .navigationBarTitle("Trivia Options")
+            .navigationBarTitle("Trivia Game Options")
         }
     }
 }
@@ -56,12 +61,31 @@ struct OptionsView: View {
 enum Category: String, CaseIterable, Identifiable {
     case general = "General Knowledge"
     case science = "Science"
+    case computers = "Computers"
+    case mathematics = "Mathematics"
+    case mythology = "Mythology"
+    case sports = "Sports"
+    case geography = "Geography"
+    case history = "History"
+    case politics = "Politics"
+    case art = "Art"
+    case celebrities = "Celebrities"
+    case animals = "Animals"
+    case vehicles = "Vehicles"
+    case comics = "Comics"
+    case animeManga = "Anime & Manga"
+    case cartoonsAnimations = "Cartoons & Animations"
+    case film = "Entertainment: Film"
+    case music = "Entertainment: Music"
+    case television = "Entertainment: Television"
+    case videoGames = "Entertainment: Video Games"
     var id: String { self.rawValue }
 }
 
 enum Difficulty: String, CaseIterable, Identifiable {
     case easy = "Easy"
     case medium = "Medium"
+    case hard = "Hard"
     var id: String { self.rawValue }
 }
 
@@ -73,6 +97,7 @@ enum QuestionType: String, CaseIterable, Identifiable {
 
 struct OptionsView_Previews: PreviewProvider {
     static var previews: some View {
+//        OptionsView().environmentObject(ContentView())
         OptionsView()
     }
 }

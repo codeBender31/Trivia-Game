@@ -4,31 +4,46 @@
 //
 //  Created by Bender on 3/27/24.
 //
+//Question.swift
+//import Foundation
+//import SwiftUI
+//
+//
+// Define the TriviaResponse struct to match the JSON response structure
 
 import Foundation
-import SwiftUI
 
-struct TriviaResponse: Codable {
-    let results: [Question]
-}
-
-struct Question: Codable, Identifiable {
+// Define your Question struct here, as previously discussed
+struct Question: Codable, Identifiable{
     let id = UUID()
-    var category: String
-    var type: String
-    var difficulty: String
-    var question: String
-    var correctAnswer: String
-    var incorrectAnswers: [String]
-
-    private enum CodingKeys: String, CodingKey {
-        case category, type, difficulty, question, correctAnswer = "correct_answer", incorrectAnswers = "incorrect_answers"
-    }
-
-    var allAnswers: [String] {
-        var all = incorrectAnswers
-        all.append(correctAnswer)
-        return all.shuffled()
+    let category: String
+    let type: String
+    let difficulty: String
+    let question: String
+    let correctAnswer: String
+    let incorrectAnswers: [String]
+    // Existing properties...
+      var userAnswer: String? = nil // Add this line
+    
+    enum CodingKeys: String, CodingKey {
+        case category, type, difficulty, question
+        case correctAnswer = "correct_answer", incorrectAnswers = "incorrect_answers"
     }
 }
+    
+struct TriviaResponse: Codable{
+        let responseCode: Int
+        let results: [Question]
+        
+        enum CodingKeys: String, CodingKey {
+                case responseCode = "response_code"
+                case results
+            }
+    }
+
+// Computed property to shuffle and combine correct and incorrect answers
+//    var allAnswers: [String] {
+//        (incorrectAnswers + [correctAnswer]).shuffled()
+//    }
+
 
